@@ -4,7 +4,7 @@ using namespace std;
 int main() {
 
 
-    cout<<"prueva para nuestro proyecto de algoritmos "<<endl;
+    cout<<"esta es otra prueva para nuestro proyecto de programacion "<<endl;
     
 
     return 0;
