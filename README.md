@@ -1,0 +1,46 @@
+//grupo 1
+
+ //informacion de nuestro proyecto
+
+//Sistema de Gestión de Biblioteca
+
+//nuestro proyecto dara informacion sobre los libros existentes de una biblioteca 
+y nos mostrara donde esta ubicado cada libro por su nombre y codigo y nos dira el nombre de las personas y de quien se los llevo 
+y su tiempo estimado para que lo deuelva, tambien nos dira los prestas y las debpluciones y nos da reporte de cada persona 
+que se lleva los libros y cuandos libro existentes sin uso hay 
+
+//integrantes: 
+jeremi figueroa, 
+jeremy jimenez, 
+andre flores, josue chavez, 
+pablo hernandez 
+
+
+//modulos:
+//1: Módulo de Catálogo de Libros
+Responsabilidades: Registrar, editar, 
+consultar y buscar libros por título, autor o código
+Definir la estructura struct Libro y gestionar la matriz o estructura de ubicación física
+
+
+//2: Módulo de Usuarios / Lectores
+Responsabilidades: Registrar lectores, validar formatos de identificadores (carné/DPI) 
+y consultar el perfil o historial de cada usuario. Definir la estructura struct Usuario
+
+
+//3: Módulo de Préstamos y Devoluciones
+Responsabilidades: Crear préstamos, registrar devoluciones, 
+validar la disponibilidad de ejemplares y actualizar los estados del libro 
+Definir la estructura struct Prestamo
+
+
+//4: Módulo de Persistencia y Archivos
+Responsabilidades: Diseñar y gestionar la carga y 
+guardado de datos en los archivos del sistema (libros.txt, usuarios.txt, prestamos.txt) 
+Garantizar que la información no se pierda al cerrar el programa.
+
+
+//5: Módulo de Reportes y Algoritmos Recursivos
+Responsabilidades: Generar las estadísticas del sistema (cantidad total de libros, disponibles, prestados e historial)
+e implementar la función recursiva exigida 
+(por ejemplo, contar libros disponibles o sumar préstamos activos con su caso base)
