@@ -94,9 +94,9 @@ bool cargarLibros(vector<Libro>& libros, string nombreArchivo) {
     return true;
 }
 
-// ---------------------------------------------------------------
+
 // USUARIOS
-// ---------------------------------------------------------------
+
 
 bool guardarUsuarios(vector<Usuario>& usuarios, string nombreArchivo) {
     ofstream archivo(nombreArchivo);
