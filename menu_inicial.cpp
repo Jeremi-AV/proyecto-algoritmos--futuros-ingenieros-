@@ -104,7 +104,7 @@ void procesarOpcion(int opcion) {
     }
     
     if (opcion >= 1 && opcion <= 5) {
-        cout << "\nPresione Enter para continuar";
+        cout << "\nPresione cualquier tecla";
         cin.ignore();
         cin.get();
     }
