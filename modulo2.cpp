@@ -1,7 +1,18 @@
+#ifndef USUARIO_H
+#define USUARIO_H
 
-#include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
+
+struct Usuario {
+    std::string Identificacion; // dpi o carnet de identidad
+    std::string nombre;         // nombre del usuario
+    std::string apellido;       // apellido del usuario
+    std::string correo;         // correo del usuario
+    std::vector<std::string> intereses;
+    bool activo;                // indica si el usuario esta activo o no
+};
 
 struct Prestamo {
     int idPrestamo;
@@ -39,3 +50,13 @@ void menuPrestamos() {
         }
     } while(opcion != 3);
 }
+
+void registrarPrestamo() {
+    std::cout << "[OK] Prestamo registrado.\n";
+}
+
+void registrarDevolucion() {
+    std::cout << "[OK] Devolucion registrada.\n";
+}
+
+#endif // USUARIO_H
