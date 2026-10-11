@@ -1,257 +1,253 @@
+// modulo4.cpp
+// Modulo 4: persistencia y archivos
+// Guarda y carga libros, usuarios y prestamos en archivos .txt
 #include <iostream>
+#include <string>
+#include <limits>
+#include <vector>
 #include <fstream>
 #include <sstream>
-#include <vector>
-#include <string>
 using namespace std;
 
-// MODULO 4 - PERSISTENCIA Y ARCHIVOS
-// Se encarga de guardar y cargar la info de libros, usuarios y
-// prestamos en archivos de texto, para que no se pierda al cerrar
-// el programa.
-//
-// NOTA: estas estructuras (Libro, Usuario, Prestamo)
-// son una primera version.
-
+// mismos struct que usa el menu_inicial.cpp
 struct Libro {
-    string codigo;
+    int id;
     string titulo;
     string autor;
-    string ubicacion;
     bool disponible;
 };
 
 struct Usuario {
-    string identificacion;
+    int id;
     string nombre;
-    string apellido;
-    string correo;
-    bool activo;
+    string carne;
 };
 
 struct Prestamo {
-    string codigoLibro;
-    string identificacionUsuario;
-    string fechaPrestamo;
-    string fechaDevolucion;
-    bool activo;
+    int idPrestamo;
+    int idLibro;
+    int idUsuario;
+    string fecha;
 };
 
-// usamos "|" como separador entre los datos de cada linea del archivo
-const char SEPARADOR = '|';
+//  GUARDAR  
 
-// LIBROS
-
-// guarda todos los libros en el archivo, regresa true si pudo escribir
-bool guardarLibros(vector<Libro>& libros, string nombreArchivo) {
-    ofstream archivo(nombreArchivo);
-
-    if (!archivo.is_open()) {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
-        return false;
-    }
-
+void guardarLibros(vector<Libro>& libros) {
+    ofstream archivo("libros.txt");
     for (int i = 0; i < libros.size(); i++) {
-        archivo << libros[i].codigo << SEPARADOR
-                << libros[i].titulo << SEPARADOR
-                << libros[i].autor << SEPARADOR
-                << libros[i].ubicacion << SEPARADOR
-                << libros[i].disponible << endl;
+        archivo << libros[i].id << "|" << libros[i].titulo << "|"
+                << libros[i].autor << "|" << libros[i].disponible << endl;
     }
-
     archivo.close();
-    return true;
 }
 
-// carga los libros desde el archivo hacia el vector, regresa true si pudo leer
-bool cargarLibros(vector<Libro>& libros, string nombreArchivo) {
-    ifstream archivo(nombreArchivo);
+void guardarUsuarios(vector<Usuario>& usuarios) {
+    ofstream archivo("usuarios.txt");
+    for (int i = 0; i < usuarios.size(); i++) {
+        archivo << usuarios[i].id << "|" << usuarios[i].nombre << "|"
+                << usuarios[i].carne << endl;
+    }
+    archivo.close();
+}
 
+void guardarPrestamos(vector<Prestamo>& prestamos) {
+    ofstream archivo("prestamos.txt");
+    for (int i = 0; i < prestamos.size(); i++) {
+        archivo << prestamos[i].idPrestamo << "|" << prestamos[i].idLibro << "|"
+                << prestamos[i].idUsuario << "|" << prestamos[i].fecha << endl;
+    }
+    archivo.close();
+}
+
+//  CARGAR  
+// regresan false si el archivo todavia no existe
+
+bool cargarLibros(vector<Libro>& libros) {
+    ifstream archivo("libros.txt");
     if (!archivo.is_open()) {
-        cout << "No existe el archivo " << nombreArchivo << " todavia." << endl;
         return false;
     }
-
     libros.clear();
     string linea;
-
     while (getline(archivo, linea)) {
+        if (linea == "") {
+            continue;
+        }
         stringstream ss(linea);
+        string id, disponible;
         Libro l;
-        string disponibleTexto;
-
-        getline(ss, l.codigo, SEPARADOR);
-        getline(ss, l.titulo, SEPARADOR);
-        getline(ss, l.autor, SEPARADOR);
-        getline(ss, l.ubicacion, SEPARADOR);
-        getline(ss, disponibleTexto, SEPARADOR);
-
-        l.disponible = (disponibleTexto == "1");
+        getline(ss, id, '|');
+        getline(ss, l.titulo, '|');
+        getline(ss, l.autor, '|');
+        getline(ss, disponible, '|');
+        l.id = stoi(id);
+        l.disponible = (disponible == "1");
         libros.push_back(l);
     }
-
     archivo.close();
     return true;
 }
 
-
-// USUARIOS
-
-
-bool guardarUsuarios(vector<Usuario>& usuarios, string nombreArchivo) {
-    ofstream archivo(nombreArchivo);
-
+bool cargarUsuarios(vector<Usuario>& usuarios) {
+    ifstream archivo("usuarios.txt");
     if (!archivo.is_open()) {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
         return false;
     }
-
-    for (int i = 0; i < usuarios.size(); i++) {
-        archivo << usuarios[i].identificacion << SEPARADOR
-                << usuarios[i].nombre << SEPARADOR
-                << usuarios[i].apellido << SEPARADOR
-                << usuarios[i].correo << SEPARADOR
-                << usuarios[i].activo << endl;
-    }
-
-    archivo.close();
-    return true;
-}
-
-bool cargarUsuarios(vector<Usuario>& usuarios, string nombreArchivo) {
-    ifstream archivo(nombreArchivo);
-
-    if (!archivo.is_open()) {
-        cout << "No existe el archivo " << nombreArchivo << " todavia." << endl;
-        return false;
-    }
-
     usuarios.clear();
     string linea;
-
     while (getline(archivo, linea)) {
+        if (linea == "") {
+            continue;
+        }
         stringstream ss(linea);
+        string id;
         Usuario u;
-        string activoTexto;
-
-        getline(ss, u.identificacion, SEPARADOR);
-        getline(ss, u.nombre, SEPARADOR);
-        getline(ss, u.apellido, SEPARADOR);
-        getline(ss, u.correo, SEPARADOR);
-        getline(ss, activoTexto, SEPARADOR);
-
-        u.activo = (activoTexto == "1");
+        getline(ss, id, '|');
+        getline(ss, u.nombre, '|');
+        getline(ss, u.carne, '|');
+        u.id = stoi(id);
         usuarios.push_back(u);
     }
-
     archivo.close();
     return true;
 }
 
-// PRESTAMOS
-
-bool guardarPrestamos(vector<Prestamo>& prestamos, string nombreArchivo) {
-    ofstream archivo(nombreArchivo);
-
+bool cargarPrestamos(vector<Prestamo>& prestamos) {
+    ifstream archivo("prestamos.txt");
     if (!archivo.is_open()) {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
         return false;
     }
-
-    for (int i = 0; i < prestamos.size(); i++) {
-        archivo << prestamos[i].codigoLibro << SEPARADOR
-                << prestamos[i].identificacionUsuario << SEPARADOR
-                << prestamos[i].fechaPrestamo << SEPARADOR
-                << prestamos[i].fechaDevolucion << SEPARADOR
-                << prestamos[i].activo << endl;
-    }
-
-    archivo.close();
-    return true;
-}
-
-bool cargarPrestamos(vector<Prestamo>& prestamos, string nombreArchivo) {
-    ifstream archivo(nombreArchivo);
-
-    if (!archivo.is_open()) {
-        cout << "No existe el archivo " << nombreArchivo << " todavia." << endl;
-        return false;
-    }
-
     prestamos.clear();
     string linea;
-
     while (getline(archivo, linea)) {
+        if (linea == "") {
+            continue;
+        }
         stringstream ss(linea);
+        string idPrestamo, idLibro, idUsuario;
         Prestamo p;
-        string activoTexto;
-
-        getline(ss, p.codigoLibro, SEPARADOR);
-        getline(ss, p.identificacionUsuario, SEPARADOR);
-        getline(ss, p.fechaPrestamo, SEPARADOR);
-        getline(ss, p.fechaDevolucion, SEPARADOR);
-        getline(ss, activoTexto, SEPARADOR);
-
-        p.activo = (activoTexto == "1");
+        getline(ss, idPrestamo, '|');
+        getline(ss, idLibro, '|');
+        getline(ss, idUsuario, '|');
+        getline(ss, p.fecha, '|');
+        p.idPrestamo = stoi(idPrestamo);
+        p.idLibro = stoi(idLibro);
+        p.idUsuario = stoi(idUsuario);
         prestamos.push_back(p);
     }
-
     archivo.close();
     return true;
 }
 
-// PRUEBA DEL MODULO (primer avance funcional)
+//   RECORRIDO Y BUSQUEDA  
 
-int main() {
-    // --- datos de prueba ---
-    vector<Libro> libros;
-    libros.push_back({"L001", "Cien anios de soledad", "Gabriel Garcia Marquez", "Estante A1", true});
-    libros.push_back({"L002", "El principito", "Antoine de Saint-Exupery", "Estante B2", false});
+// recorre el vector y muestra todos los libros
+void mostrarLibros(vector<Libro>& libros) {
+    if (libros.size() == 0) {
+        cout << "No hay libros cargados." << endl;
+        return;
+    }
+    for (int i = 0; i < libros.size(); i++) {
+        cout << libros[i].id << " - " << libros[i].titulo << " - " << libros[i].autor;
+        if (libros[i].disponible) {
+            cout << " - Disponible" << endl;
+        } else {
+            cout << " - Prestado" << endl;
+        }
+    }
+}
 
-    vector<Usuario> usuarios;
-    usuarios.push_back({"1234567890101", "Josue", "Chavez", "josue@correo.com", true});
+// busca un libro por id, regresa su posicion o -1 si no existe
+int buscarLibroPorId(vector<Libro>& libros, int id) {
+    for (int i = 0; i < libros.size(); i++) {
+        if (libros[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
 
-    vector<Prestamo> prestamos;
-    prestamos.push_back({"L002", "1234567890101", "2026-09-10", "2026-09-24", true});
-
-    // --- guardar en archivos ---
-    guardarLibros(libros, "libros.txt");
-    guardarUsuarios(usuarios, "usuarios.txt");
-    guardarPrestamos(prestamos, "prestamos.txt");
-
-    cout << "Datos guardados en los archivos." << endl;
-
-    // --- vaciamos los vectores para simular que el programa se cerro ---
+// datos de ejemplo para probar mientras los otros modulos no estan listos
+void cargarDatosDePrueba(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
     libros.clear();
     usuarios.clear();
     prestamos.clear();
+    libros.push_back({1, "Cien anios de soledad", "Gabriel Garcia Marquez", true});
+    libros.push_back({2, "El principito", "Antoine de Saint-Exupery", false});
+    usuarios.push_back({1, "Josue Chavez", "2026001"});
+    prestamos.push_back({1, 2, 1, "2026-10-01"});
+}
 
-    // --- volvemos a cargar desde los archivos ---
-    cargarLibros(libros, "libros.txt");
-    cargarUsuarios(usuarios, "usuarios.txt");
-    cargarPrestamos(prestamos, "prestamos.txt");
+//  MENU DEL MODULO  
 
-    cout << endl;
-    cout << "----- LIBROS CARGADOS DESDE EL ARCHIVO -----" << endl;
-    for (int i = 0; i < libros.size(); i++) {
-        cout << libros[i].codigo << " - " << libros[i].titulo
-             << " - " << libros[i].autor << " - " << libros[i].ubicacion
-             << " - Disponible: " << libros[i].disponible << endl;
+void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
+    int opcion = 0;
+
+    cout << "   [MODULO 4: PERSISTENCIA Y ARCHIVOS]" << endl;
+    cout << "1. Guardar datos en archivos (.txt)" << endl;
+    cout << "2. Cargar datos desde archivos (.txt)" << endl;
+    cout << "3. Ver libros cargados" << endl;
+    cout << "4. Buscar libro por id" << endl;
+    cout << "5. Cargar datos de prueba" << endl;
+    cout << "Seleccione una opcion: ";
+    cin >> opcion;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Opcion invalida." << endl;
+        return;
     }
 
-    cout << endl;
-    cout << "----- USUARIOS CARGADOS DESDE EL ARCHIVO -----" << endl;
-    for (int i = 0; i < usuarios.size(); i++) {
-        cout << usuarios[i].identificacion << " - " << usuarios[i].nombre
-             << " " << usuarios[i].apellido << " - " << usuarios[i].correo << endl;
+    if (opcion == 1) {
+        guardarLibros(libros);
+        guardarUsuarios(usuarios);
+        guardarPrestamos(prestamos);
+        cout << "Datos guardados en los archivos." << endl;
+    } else if (opcion == 2) {
+        if (cargarLibros(libros) && cargarUsuarios(usuarios) && cargarPrestamos(prestamos)) {
+            cout << "Datos cargados desde los archivos." << endl;
+        } else {
+            cout << "No se encontraron los archivos. Primero guarde los datos." << endl;
+        }
+    } else if (opcion == 3) {
+        mostrarLibros(libros);
+    } else if (opcion == 4) {
+        int id;
+        cout << "Ingrese el id del libro: ";
+        cin >> id;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Id invalido." << endl;
+            return;
+        }
+        int pos = buscarLibroPorId(libros, id);
+        if (pos == -1) {
+            cout << "El libro no existe." << endl;
+        } else {
+            cout << "Encontrado: " << libros[pos].titulo << " - " << libros[pos].autor << endl;
+        }
+    } else if (opcion == 5) {
+        cargarDatosDePrueba(libros, usuarios, prestamos);
+        cout << "Datos de prueba cargados." << endl;
+    } else {
+        cout << "Opcion invalida." << endl;
     }
+}
 
-    cout << endl;
-    cout << "----- PRESTAMOS CARGADOS DESDE EL ARCHIVO -----" << endl;
-    for (int i = 0; i < prestamos.size(); i++) {
-        cout << "Libro " << prestamos[i].codigoLibro << " prestado a "
-             << prestamos[i].identificacionUsuario << " desde "
-             << prestamos[i].fechaPrestamo << " hasta " << prestamos[i].fechaDevolucion << endl;
+// main solo para probar este modulo por separado
+int main() {
+    vector<Libro> libros;
+    vector<Usuario> usuarios;
+    vector<Prestamo> prestamos;
+    int seguir = 1;
+
+    while (seguir == 1) {
+        moduloArchivos(libros, usuarios, prestamos);
+        cout << "\nContinuar en el modulo? (1 = si, 0 = salir): ";
+        cin >> seguir;
+        cout << endl;
     }
 
     return 0;
