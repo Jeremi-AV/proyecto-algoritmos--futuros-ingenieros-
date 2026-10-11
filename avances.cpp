@@ -46,7 +46,8 @@ void moduloCatalogo() {
         cout << "2. Ver catalogo completo" << endl;
         cout << "3. Buscar libro por titulo" << endl;
         cout << "4. Ver mapa de estantes" << endl;
-        cout << "5. Volver al menu principal" << endl;
+        cout << "5. Asignar libro a estante" << endl;
+        cout << "6. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -102,8 +103,26 @@ void moduloCatalogo() {
                 }
                 cout << endl;
             }
+
+        } else if (subOpcion == 5) {
+            int fila = 0, columna = 0;
+            string nombreLibro;
+            cout << "\nIngrese fila (0 a 2): ";
+            cin >> fila;
+            cout << "Ingrese columna (0 a 2): ";
+            cin >> columna;
+            
+            if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3) {
+                cin.ignore();
+                cout << "Ingrese titulo del libro para el estante: ";
+                getline(cin, nombreLibro);
+                matrizEstantes[fila][columna] = nombreLibro;
+                cout << "Estante actualizado exitosamente.\n";
+            } else {
+                cout << "Coordenadas fuera de rango.\n";
+            }
         }
-    } while (subOpcion != 5);
+    } while (subOpcion != 6);
 }
 
 void moduloUsuarios() {
