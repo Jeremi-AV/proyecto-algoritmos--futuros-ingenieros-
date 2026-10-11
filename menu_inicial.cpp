@@ -111,7 +111,7 @@ void moduloCatalogo() {
 void moduloUsuarios() {
     int subOpcion = 0;
     do {
-        cout << "\n--- [MODULO 2: USUARIOS Y LECTORES] ---" << endl;
+        cout << "\nMODULO 2: USUARIOS Y LECTORES" << endl;
         cout << "1. Registrar nuevo lector (Carga)" << endl;
         cout << "2. Mostrar todos los lectores (Recorrido)" << endl;
         cout << "3. Buscar usuario por Carne (Busqueda)" << endl;
@@ -135,7 +135,7 @@ void moduloUsuarios() {
 
         } else if (subOpcion == 2) {
             // RECORRIDO
-            cout << "\n--- LISTA DE LECTORES REGISTRADOS ---" << endl;
+            cout << "\nLISTA DE LECTORES REGISTRADOS" << endl;
             if (listaUsuarios.empty()) {
                 cout << "No hay usuarios registrados.\n";
             } else {
@@ -169,7 +169,7 @@ void moduloUsuarios() {
 void moduloPrestamos() {
     int subOpcion = 0;
     do {
-        cout << "\n--- [MODULO 3: PRESTAMOS Y DEVOLUCIONES] ---" << endl;
+        cout << "\nMODULO 3: PRESTAMOS Y DEVOLUCIONES" << endl;
         cout << "1. Registrar prestamo (Carga)" << endl;
         cout << "2. Ver historial de prestamos (Recorrido)" << endl;
         cout << "3. Volver al menu principal" << endl;
@@ -200,7 +200,7 @@ void moduloPrestamos() {
 
         } else if (subOpcion == 2) {
          
-            cout << "\n--- HISTORIAL DE PRESTAMOS ---" << endl;
+            cout << "\nHISTORIAL DE PRESTAMOS" << endl;
             if (listaPrestamos.empty()) {
                 cout << "No hay prestamos registrados.\n";
             } else {
@@ -217,7 +217,7 @@ void moduloPrestamos() {
 
 
 void moduloArchivos() {
-    cout << "\n--- [MODULO 4: PERSISTENCIA Y ARCHIVOS] ---" << endl;
+    cout << "\nMODULO 4: PERSISTENCIA Y ARCHIVOS" << endl;
     cout << "1. Guardar datos en archivos (.txt)" << endl;
     cout << "2. Cargar datos desde archivos (.txt)" << endl;
     cout << "*(En desarrollo para entregas posteriores)*" << endl;
@@ -225,7 +225,7 @@ void moduloArchivos() {
 
 
 void moduloReportes() {
-    cout << "\n--- [MODULO 5: REPORTES Y RECURSIVIDAD] ---" << endl;
+    cout << "\nMODULO 5: REPORTES Y RECURSIVIDAD" << endl;
     cout << "Total de Libros registrados: " << catalogoLibros.size() << endl;
     cout << "Total de Usuarios registrados: " << listaUsuarios.size() << endl;
     cout << "Total de Prestamos realizados: " << listaPrestamos.size() << endl;
@@ -235,9 +235,7 @@ void moduloReportes() {
 int mostrarMenu() {
     int opcion = 0;
 
-    cout << "\n========================================" << endl;
     cout << "   SISTEMA DE GESTION DE BIBLIOTECA   " << endl;
-    cout << "========================================" << endl;
     cout << "1: Catalogo de Libros" << endl;
     cout << "2: Usuarios / Lectores" << endl;
     cout << "3: Prestamos y Devoluciones" << endl;
