@@ -1,17 +1,22 @@
-// usuario.h
-#ifndef USUARIO_H
-#define USUARIO_H
 
 #include <string>
 #include <vector>
 #include <iostream>
 
-struct Usuario {
-    std::string Identificacion; // dpi o carnet de identidad
-    std::string nombre; // nombre del usuario
-    std::string apellido; // apellido del usuario
-    std::string correo;  // correo del usuario
-    std::vector<std::string> intereses;    bool activo; // indica si el usuario esta activo o no
+struct Prestamo {
+    int idPrestamo;
+    int idUsuario;
+    int idLibro;
+    std::string fechaPrestamo;
+    std::string fechaDevolucion;
+    bool devuelto;
 };
-    #endif // USUARIO_H
 
+const int MAX_PRESTAMOS = 100;
+extern Prestamo listaPrestamos[MAX_PRESTAMOS];
+extern int totalPrestamos;
+
+// Prototipos del Módulo 3
+void menuPrestamos();
+void registrarPrestamo();
+void registrarDevolucion();
