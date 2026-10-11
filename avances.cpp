@@ -47,7 +47,8 @@ void moduloCatalogo() {
         cout << "3. Buscar libro por titulo" << endl;
         cout << "4. Ver mapa de estantes" << endl;
         cout << "5. Asignar libro a estante" << endl;
-        cout << "6. Volver al menu principal" << endl;
+        cout << "6. Eliminar libro" << endl;
+        cout << "7. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -121,8 +122,24 @@ void moduloCatalogo() {
             } else {
                 cout << "Coordenadas fuera de rango.\n";
             }
+
+        } else if (subOpcion == 6) {
+            int idEliminar = 0;
+            cout << "\nIngrese ID del libro a eliminar: ";
+            cin >> idEliminar;
+            bool eliminado = false;
+
+            for (size_t i = 0; i < catalogoLibros.size(); i++) {
+                if (catalogoLibros[i].id == idEliminar) {
+                    catalogoLibros.erase(catalogoLibros.begin() + i);
+                    eliminado = true;
+                    cout << "Libro eliminado del catalogo exitosamente.\n";
+                    break;
+                }
+            }
+            if (!eliminado) cout << "No se encontro un libro con ese ID.\n";
         }
-    } while (subOpcion != 6);
+    } while (subOpcion != 7);
 }
 
 void moduloUsuarios() {
