@@ -30,6 +30,14 @@ string matrizEstantes[3][3];
 vector<Usuario> listaUsuarios;
 vector<Prestamo> listaPrestamos;
 
+int conteoRecursivoLibros(int indice) {
+    if (indice >= catalogoLibros.size()) {
+        return 0;
+    }
+    int suma = catalogoLibros[indice].disponible ? 1 : 0;
+    return suma + conteoRecursivoLibros(indice + 1);
+}
+
 void moduloCatalogo() {
     int subOpcion = 0;
     do {
@@ -157,8 +165,9 @@ void moduloPrestamos() {
     do {
         cout << "\nMODULO 3: PRESTAMOS Y DEVOLUCIONES" << endl;
         cout << "1. Registrar prestamo" << endl;
-        cout << "2. Ver historial de prestamos" << endl;
-        cout << "3. Volver al menu principal" << endl;
+        cout << "2. Registrar devolucion" << endl;
+        cout << "3. Ver historial de prestamos" << endl;
+        cout << "4. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -173,17 +182,44 @@ void moduloPrestamos() {
             cout << "Ingrese Fecha: ";
             cin >> p.fecha;
 
+            bool libroExiste = false;
             for (auto& libro : catalogoLibros) {
                 if (libro.id == p.idLibro) {
-                    libro.disponible = false;
+                    libroExiste = true;
+                    if (libro.disponible) {
+                        libro.disponible = false;
+                        listaPrestamos.push_back(p);
+                        cout << "Prestamo registrado con exito.\n";
+                    } else {
+                        cout << "El libro ya esta prestado.\n";
+                    }
                     break;
                 }
             }
-
-            listaPrestamos.push_back(p);
-            cout << "Prestamo registrado con exito.\n";
+            if (!libroExiste) cout << "No se encontro el libro especificado.\n";
 
         } else if (subOpcion == 2) {
+            int idLibroDevolver = 0;
+            cout << "\nIngrese ID del libro a devolver: ";
+            cin >> idLibroDevolver;
+            bool devuelto = false;
+
+            for (auto& libro : catalogoLibros) {
+                if (libro.id == idLibroDevolver) {
+                    if (!libro.disponible) {
+                        libro.disponible = true;
+                        devuelto = true;
+                        cout << "Libro devuelto exitosamente.\n";
+                    } else {
+                        cout << "El libro ya estaba disponible.\n";
+                        devuelto = true;
+                    }
+                    break;
+                }
+            }
+            if (!devuelto) cout << "No se encontro el libro para devolucion.\n";
+
+        } else if (subOpcion == 3) {
             cout << "\nHISTORIAL DE PRESTAMOS" << endl;
             if (listaPrestamos.empty()) {
                 cout << "No hay prestamos registrados.\n";
@@ -196,7 +232,7 @@ void moduloPrestamos() {
                 }
             }
         }
-    } while (subOpcion != 3);
+    } while (subOpcion != 4);
 }
 
 void moduloArchivos() {
@@ -210,6 +246,7 @@ void moduloReportes() {
     cout << "Total de Libros registrados: " << catalogoLibros.size() << endl;
     cout << "Total de Usuarios registrados: " << listaUsuarios.size() << endl;
     cout << "Total de Prestamos realizados: " << listaPrestamos.size() << endl;
+    cout << "Libros disponibles (Conteo Recursivo): " << conteoRecursivoLibros(0) << endl;
 }
 
 int mostrarMenu() {
