@@ -47,7 +47,8 @@ void moduloCatalogo() {
         cout << "3. Buscar libro por titulo" << endl;
         cout << "4. Ver mapa de estantes" << endl;
         cout << "5. Asignar libro a estante" << endl;
-        cout << "6. Volver al menu principal" << endl;
+        cout << "6. Eliminar libro" << endl;
+        cout << "7. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -121,8 +122,24 @@ void moduloCatalogo() {
             } else {
                 cout << "Coordenadas fuera de rango.\n";
             }
+
+        } else if (subOpcion == 6) {
+            int idEliminar = 0;
+            cout << "\nIngrese ID del libro a eliminar: ";
+            cin >> idEliminar;
+            bool eliminado = false;
+
+            for (size_t i = 0; i < catalogoLibros.size(); i++) {
+                if (catalogoLibros[i].id == idEliminar) {
+                    catalogoLibros.erase(catalogoLibros.begin() + i);
+                    eliminado = true;
+                    cout << "Libro eliminado del catalogo exitosamente.\n";
+                    break;
+                }
+            }
+            if (!eliminado) cout << "No se encontro un libro con ese ID.\n";
         }
-    } while (subOpcion != 6);
+    } while (subOpcion != 7);
 }
 
 void moduloUsuarios() {
@@ -132,7 +149,8 @@ void moduloUsuarios() {
         cout << "1. Registrar nuevo lector" << endl;
         cout << "2. Mostrar todos los lectores" << endl;
         cout << "3. Buscar usuario por Carne" << endl;
-        cout << "4. Volver al menu principal" << endl;
+        cout << "4. Eliminar usuario" << endl;
+        cout << "5. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -175,8 +193,24 @@ void moduloUsuarios() {
                 }
             }
             if (!hallado) cout << "No existe un usuario con ese Carne/DPI.\n";
+
+        } else if (subOpcion == 4) {
+            int idEliminar = 0;
+            cout << "\nIngrese ID de usuario a eliminar: ";
+            cin >> idEliminar;
+            bool eliminado = false;
+
+            for (size_t i = 0; i < listaUsuarios.size(); i++) {
+                if (listaUsuarios[i].id == idEliminar) {
+                    listaUsuarios.erase(listaUsuarios.begin() + i);
+                    eliminado = true;
+                    cout << "Usuario eliminado exitosamente.\n";
+                    break;
+                }
+            }
+            if (!eliminado) cout << "No se encontro un usuario con ese ID.\n";
         }
-    } while (subOpcion != 4);
+    } while (subOpcion != 5);
 }
 
 void moduloPrestamos() {
@@ -186,7 +220,8 @@ void moduloPrestamos() {
         cout << "1. Registrar prestamo" << endl;
         cout << "2. Registrar devolucion" << endl;
         cout << "3. Ver historial de prestamos" << endl;
-        cout << "4. Volver al menu principal" << endl;
+        cout << "4. Cancelar prestamo" << endl;
+        cout << "5. Volver al menu principal" << endl;
         cout << "Seleccione una opcion: ";
         cin >> subOpcion;
 
@@ -250,8 +285,31 @@ void moduloPrestamos() {
                          << " | Fecha: " << p.fecha << endl;
                 }
             }
+
+        } else if (subOpcion == 4) {
+            int idCancelar = 0;
+            cout << "\nIngrese ID del prestamo a cancelar: ";
+            cin >> idCancelar;
+            bool cancelado = false;
+
+            for (size_t i = 0; i < listaPrestamos.size(); i++) {
+                if (listaPrestamos[i].idPrestamo == idCancelar) {
+                    int idLibro = listaPrestamos[i].idLibro;
+                    for (auto& libro : catalogoLibros) {
+                        if (libro.id == idLibro) {
+                            libro.disponible = true;
+                            break;
+                        }
+                    }
+                    listaPrestamos.erase(listaPrestamos.begin() + i);
+                    cancelado = true;
+                    cout << "Prestamo cancelado y libro vuelto a disponible.\n";
+                    break;
+                }
+            }
+            if (!cancelado) cout << "No se encontro un prestamo con ese ID.\n";
         }
-    } while (subOpcion != 4);
+    } while (subOpcion != 5);
 }
 
 void moduloArchivos() {
