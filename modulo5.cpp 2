@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+struct Venta {
+    string producto;
+    int cantidad;
+    double precioUnitario;
+    double total;
+};
+
+void mostrarEncabezado() {
+    cout << "========================================" << endl;
+    cout << "       MODULO 5: REPORTES Y VENTAS      " << endl;
+    cout << "========================================" << endl;
+}
+
+void generarReporte(const vector<Venta>& ventas) {
+    if (ventas.empty()) {
+        cout << "\nNo hay ventas registradas.\n" << endl;
+        return;
+    }
+
+    double granTotal = 0.0;
+
+    cout << "\n---------------------------------------------------" << endl;
+    cout << left << setw(18) << "Producto" 
+         << setw(10) << "Cantidad" 
+         << setw(12) << "Precio U." 
+         << setw(10) << "Total" << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    for (const auto& v : ventas) {
+        cout << left << setw(18) << v.producto 
+             << setw(10) << v.cantidad 
+             << "Q" << setw(11) << fixed << setprecision(2) << v.precioUnitario 
+             << "Q" << v.total << endl;
+        granTotal += v.total;
+    }
+
+    cout << "---------------------------------------------------" << endl;
+    cout << "GRAN TOTAL: Q" << fixed << setprecision(2) << granTotal << endl;
+    cout << "---------------------------------------------------\n" << endl;
+}
+
+int main() {
+    vector<Venta> listaVentas;
+    int opcion = 0;
+
+    do {
+        mostrarEncabezado();
+        cout << "1. Registrar nueva venta" << endl;
+        cout << "2. Generar reporte general de ventas" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "\nOpcion no valida.\n" << endl;
+            continue;
+        }
+
+        if (opcion == 1) {
+            Venta nuevaVenta;
+            cout << "\nNombre del producto: ";
+            cin.ignore();
+            getline(cin, nuevaVenta.producto);
+
+            cout << "Cantidad vendida: ";
+            cin >> nuevaVenta.cantidad;
+
+            cout << "Precio unitario (Q): ";
+            cin >> nuevaVenta.precioUnitario;
+
+            nuevaVenta.total = nuevaVenta.cantidad * nuevaVenta.precioUnitario;
+            listaVentas.push_back(nuevaVenta);
+
+            cout << "\nVenta registrada.\n" << endl;
+        } 
+        else if (opcion == 2) {
+            generarReporte(listaVentas);
+        } 
+        else if (opcion == 3) {
+            cout << "\nSaliendo..." << endl;
+        } 
+        else {
+            cout << "\nOpcion no valida.\n" << endl;
+        }
+
+    } while (opcion != 3);
+
+    return 0;
+}
