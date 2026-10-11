@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include <limits>
 
 using namespace std;
+
 
 struct Libro {
     int id;
@@ -24,41 +26,218 @@ struct Prestamo {
     string fecha;
 };
 
+
+vector<Libro> catalogoLibros;
+string matrizEstantes[3][3]; 
+
+
+vector<Usuario> listaUsuarios;
+
+
+vector<Prestamo> listaPrestamos;
+
 void moduloCatalogo() {
-    cout << "MODULO 1: CATALOGO DE LIBROS" << endl;
-    cout << "1. Registrar libro" << endl;
-    cout << "2. Buscar libro por titulo/autor" << endl;
-    cout << "3. Ver ubicacion en matriz fisica" << endl;
+    int subOpcion = 0;
+    do {
+        cout << "\n--- [MODULO 1: CATALOGO DE LIBROS] ---" << endl;
+        cout << "1. Registrar libro (Carga)" << endl;
+        cout << "2. Ver catalogo completo (Recorrido)" << endl;
+        cout << "3. Buscar libro por titulo (Busqueda)" << endl;
+        cout << "4. Ver mapa de estantes (Matriz)" << endl;
+        cout << "5. Volver al menu principal" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> subOpcion;
+
+        if (subOpcion == 1) {
+           
+            Libro nuevo;
+            cout << "\nIngrese ID del libro: ";
+            cin >> nuevo.id;
+            cin.ignore();
+            cout << "Ingrese Titulo: ";
+            getline(cin, nuevo.titulo);
+            cout << "Ingrese Autor: ";
+            getline(cin, nuevo.autor);
+            nuevo.disponible = true;
+
+            catalogoLibros.push_back(nuevo);
+            cout << "-> Libro registrado exitosamente en el vector.\n";
+
+        } else if (subOpcion == 2) {
+          
+            cout << "\n--- LISTADO DE LIBROS EN CATALOGO ---" << endl;
+            if (catalogoLibros.empty()) {
+                cout << "No hay libros registrados aun.\n";
+            } else {
+                for (const auto& libro : catalogoLibros) {
+                    cout << "ID: " << libro.id 
+                         << " | Titulo: " << libro.titulo 
+                         << " | Autor: " << libro.autor 
+                         << " | Estado: " << (libro.disponible ? "Disponible" : "Prestado") << endl;
+                }
+            }
+
+        } else if (subOpcion == 3) {
+           
+            cin.ignore();
+            string busqueda;
+            cout << "\nIngrese el titulo a buscar: ";
+            getline(cin, busqueda);
+            bool encontrado = false;
+
+            for (const auto& libro : catalogoLibros) {
+                if (libro.titulo.find(busqueda) != string::npos) {
+                    cout << "¡Encontrado! ID: " << libro.id 
+                         << " | Titulo: " << libro.titulo 
+                         << " | Autor: " << libro.autor << endl;
+                    encontrado = true;
+                }
+            }
+            if (!encontrado) cout << "No se encontro ningun libro con ese titulo.\n";
+
+        } else if (subOpcion == 4) {
+           
+            cout << "\n--- MATRIZ FISICA DE ESTANTES (3x3) ---" << endl;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    cout << "[" << matrizEstantes[i][j] << "]\t";
+                }
+                cout << endl;
+            }
+        }
+    } while (subOpcion != 5);
 }
 
 void moduloUsuarios() {
-    cout << "MODULO 2: USUARIOS Y LECTORES" << endl;
-    cout << "1. Registrar nuevo lector" << endl;
-    cout << "2. Consultar perfil por carne/DPI" << endl;
+    int subOpcion = 0;
+    do {
+        cout << "\n--- [MODULO 2: USUARIOS Y LECTORES] ---" << endl;
+        cout << "1. Registrar nuevo lector (Carga)" << endl;
+        cout << "2. Mostrar todos los lectores (Recorrido)" << endl;
+        cout << "3. Buscar usuario por Carne (Busqueda)" << endl;
+        cout << "4. Volver al menu principal" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> subOpcion;
+
+        if (subOpcion == 1) {
+          
+            Usuario u;
+            cout << "\nIngrese ID de Usuario: ";
+            cin >> u.id;
+            cin.ignore();
+            cout << "Ingrese Nombre completo: ";
+            getline(cin, u.nombre);
+            cout << "Ingrese Carne/DPI: ";
+            getline(cin, u.carne);
+
+            listaUsuarios.push_back(u);
+            cout << "-> Lector registrado exitosamente.\n";
+
+        } else if (subOpcion == 2) {
+            // RECORRIDO
+            cout << "\n--- LISTA DE LECTORES REGISTRADOS ---" << endl;
+            if (listaUsuarios.empty()) {
+                cout << "No hay usuarios registrados.\n";
+            } else {
+                for (size_t i = 0; i < listaUsuarios.size(); i++) {
+                    cout << i + 1 << ". ID: " << listaUsuarios[i].id 
+                         << " | Nombre: " << listaUsuarios[i].nombre 
+                         << " | Carne: " << listaUsuarios[i].carne << endl;
+                }
+            }
+
+        } else if (subOpcion == 3) {
+           
+            string carneBuscar;
+            cout << "\nIngrese Carne o DPI a buscar: ";
+            cin >> carneBuscar;
+            bool hallado = false;
+
+            for (const auto& u : listaUsuarios) {
+                if (u.carne == carneBuscar) {
+                    cout << "Usuario encontrado: " << u.nombre << " (ID: " << u.id << ")\n";
+                    hallado = true;
+                    break;
+                }
+            }
+            if (!hallado) cout << "No existe un usuario con ese Carne/DPI.\n";
+        }
+    } while (subOpcion != 4);
 }
+
 
 void moduloPrestamos() {
-    cout << "   [MODULO 3: PRESTAMOS Y DEVOLUCIONES]" << endl;
-    cout << "1. Registrar prestamo de libro" << endl;
-    cout << "2. Registrar devolucion de libro" << endl;
+    int subOpcion = 0;
+    do {
+        cout << "\n--- [MODULO 3: PRESTAMOS Y DEVOLUCIONES] ---" << endl;
+        cout << "1. Registrar prestamo (Carga)" << endl;
+        cout << "2. Ver historial de prestamos (Recorrido)" << endl;
+        cout << "3. Volver al menu principal" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> subOpcion;
+
+        if (subOpcion == 1) {
+
+            Prestamo p;
+            cout << "\nIngrese ID del Prestamo: ";
+            cin >> p.idPrestamo;
+            cout << "Ingrese ID del Libro a prestar: ";
+            cin >> p.idLibro;
+            cout << "Ingrese ID del Usuario: ";
+            cin >> p.idUsuario;
+            cout << "Ingrese Fecha (DD/MM/AAAA): ";
+            cin >> p.fecha;
+
+            for (auto& libro : catalogoLibros) {
+                if (libro.id == p.idLibro) {
+                    libro.disponible = false;
+                    break;
+                }
+            }
+
+            listaPrestamos.push_back(p);
+            cout << "-> Prestamo registrado y libro marcado como prestado.\n";
+
+        } else if (subOpcion == 2) {
+         
+            cout << "\n--- HISTORIAL DE PRESTAMOS ---" << endl;
+            if (listaPrestamos.empty()) {
+                cout << "No hay prestamos registrados.\n";
+            } else {
+                for (const auto& p : listaPrestamos) {
+                    cout << "Prestamo #" << p.idPrestamo 
+                         << " | Libro ID: " << p.idLibro 
+                         << " | Usuario ID: " << p.idUsuario 
+                         << " | Fecha: " << p.fecha << endl;
+                }
+            }
+        }
+    } while (subOpcion != 3);
 }
+
 
 void moduloArchivos() {
-    cout << "   [MODULO 4: PERSISTENCIA Y ARCHIVOS]" << endl;
+    cout << "\n--- [MODULO 4: PERSISTENCIA Y ARCHIVOS] ---" << endl;
     cout << "1. Guardar datos en archivos (.txt)" << endl;
     cout << "2. Cargar datos desde archivos (.txt)" << endl;
+    cout << "*(En desarrollo para entregas posteriores)*" << endl;
 }
 
+
 void moduloReportes() {
-    cout << "   [MODULO 5: REPORTES Y RECURSIVIDAD]" << endl;
-    cout << "1. Mostrar estadisticas generales" << endl;
-    cout << "2. Ejecutar conteo recursivo de libros disponibles" << endl;
+    cout << "\n--- [MODULO 5: REPORTES Y RECURSIVIDAD] ---" << endl;
+    cout << "Total de Libros registrados: " << catalogoLibros.size() << endl;
+    cout << "Total de Usuarios registrados: " << listaUsuarios.size() << endl;
+    cout << "Total de Prestamos realizados: " << listaPrestamos.size() << endl;
 }
+
 
 int mostrarMenu() {
     int opcion = 0;
 
-    cout << "\nSISTEMA DE GESTION DE BIBLIOTECA" << endl;
+    cout << "\n========================================" << endl;
+    cout << "   SISTEMA DE GESTION DE BIBLIOTECA   " << endl;
+    cout << "========================================" << endl;
     cout << "1: Catalogo de Libros" << endl;
     cout << "2: Usuarios / Lectores" << endl;
     cout << "3: Prestamos y Devoluciones" << endl;
@@ -96,21 +275,24 @@ void procesarOpcion(int opcion) {
             moduloReportes();
             break;
         case 6:
-            cout << "\nCerrando el sistema" << endl;
+            cout << "\nCerrando el sistema..." << endl;
             break;
         default:
-            cout << "\nOpcion invalida Intente de nuevo\n" << endl;
+            cout << "\nOpcion invalida. Intente de nuevo.\n" << endl;
             break;
     }
-    
-    if (opcion >= 1 && opcion <= 5) {
-        cout << "\nPresione cualquier tecla";
-        cin.ignore();
-        cin.get();
+}
+
+void inicializarMatriz() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            matrizEstantes[i][j] = "Disponible";
+        }
     }
 }
 
 int main() {
+    inicializarMatriz();
     int opcion = 0;
 
     do {
