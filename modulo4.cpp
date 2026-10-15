@@ -30,7 +30,7 @@ struct Prestamo {
     string fecha;
 };
 
-//  GUARDAR  
+//  GUARDAR 
 
 void guardarLibros(vector<Libro>& libros) {
     ofstream archivo("libros.txt");
@@ -59,7 +59,7 @@ void guardarPrestamos(vector<Prestamo>& prestamos) {
     archivo.close();
 }
 
-//  CARGAR  
+//  CARGAR 
 // regresan false si el archivo todavia no existe
 
 bool cargarLibros(vector<Libro>& libros) {
@@ -139,7 +139,7 @@ bool cargarPrestamos(vector<Prestamo>& prestamos) {
     return true;
 }
 
-//   RECORRIDO Y BUSQUEDA  
+//  RECORRIDO Y BUSQUEDA 
 
 // recorre el vector y muestra todos los libros
 void mostrarLibros(vector<Libro>& libros) {
@@ -154,6 +154,29 @@ void mostrarLibros(vector<Libro>& libros) {
         } else {
             cout << " - Prestado" << endl;
         }
+    }
+}
+
+// recorre el vector y muestra todos los usuarios
+void mostrarUsuarios(vector<Usuario>& usuarios) {
+    if (usuarios.size() == 0) {
+        cout << "No hay usuarios cargados." << endl;
+        return;
+    }
+    for (int i = 0; i < usuarios.size(); i++) {
+        cout << usuarios[i].id << " - " << usuarios[i].nombre << " - " << usuarios[i].carne << endl;
+    }
+}
+
+// recorre el vector y muestra todos los prestamos
+void mostrarPrestamos(vector<Prestamo>& prestamos) {
+    if (prestamos.size() == 0) {
+        cout << "No hay prestamos cargados." << endl;
+        return;
+    }
+    for (int i = 0; i < prestamos.size(); i++) {
+        cout << "Prestamo " << prestamos[i].idPrestamo << " - libro " << prestamos[i].idLibro
+             << " - usuario " << prestamos[i].idUsuario << " - fecha " << prestamos[i].fecha << endl;
     }
 }
 
@@ -178,7 +201,7 @@ void cargarDatosDePrueba(vector<Libro>& libros, vector<Usuario>& usuarios, vecto
     prestamos.push_back({1, 2, 1, "2026-10-01"});
 }
 
-//  MENU DEL MODULO  
+//  MENU DEL MODULO 
 
 void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
     int opcion = 0;
@@ -189,6 +212,7 @@ void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Pre
     cout << "3. Ver libros cargados" << endl;
     cout << "4. Buscar libro por id" << endl;
     cout << "5. Cargar datos de prueba" << endl;
+    cout << "6. Ver usuarios y prestamos cargados" << endl;
     cout << "Seleccione una opcion: ";
     cin >> opcion;
 
@@ -231,6 +255,9 @@ void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Pre
     } else if (opcion == 5) {
         cargarDatosDePrueba(libros, usuarios, prestamos);
         cout << "Datos de prueba cargados." << endl;
+    } else if (opcion == 6) {
+        mostrarUsuarios(usuarios);
+        mostrarPrestamos(prestamos);
     } else {
         cout << "Opcion invalida." << endl;
     }
