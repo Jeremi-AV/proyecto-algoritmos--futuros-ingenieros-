@@ -139,7 +139,7 @@ bool cargarPrestamos(vector<Prestamo>& prestamos) {
     return true;
 }
 
-//  RECORRIDO Y BUSQUEDA 
+// RECORRIDO Y BUSQUEDA 
 
 // recorre el vector y muestra todos los libros
 void mostrarLibros(vector<Libro>& libros) {
@@ -201,7 +201,7 @@ void cargarDatosDePrueba(vector<Libro>& libros, vector<Usuario>& usuarios, vecto
     prestamos.push_back({1, 2, 1, "2026-10-01"});
 }
 
-//  MENU DEL MODULO 
+//  MENU DEL MODULO
 
 void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
     int opcion = 0;
@@ -227,10 +227,12 @@ void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Pre
         guardarLibros(libros);
         guardarUsuarios(usuarios);
         guardarPrestamos(prestamos);
-        cout << "Datos guardados en los archivos." << endl;
+        cout << "Datos guardados: " << libros.size() << " libros, " << usuarios.size()
+             << " usuarios, " << prestamos.size() << " prestamos." << endl;
     } else if (opcion == 2) {
         if (cargarLibros(libros) && cargarUsuarios(usuarios) && cargarPrestamos(prestamos)) {
-            cout << "Datos cargados desde los archivos." << endl;
+            cout << "Datos cargados: " << libros.size() << " libros, " << usuarios.size()
+                 << " usuarios, " << prestamos.size() << " prestamos." << endl;
         } else {
             cout << "No se encontraron los archivos. Primero guarde los datos." << endl;
         }
