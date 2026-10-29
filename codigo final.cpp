@@ -87,7 +87,6 @@ void moduloCatalogo() {
                          << " | Estado: " << (libro.disponible ? "Disponible" : "Prestado") << endl;
                 }
             }
-
         } else if (subOpcion == 3) {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             string busqueda;
