@@ -1,0 +1,5 @@
+0|mateo|0000
+1|sofia castillo|0001
+2|alejandro herrera|0002
+3|sebastian rivas|0003
+4|valentina dominguez|0004
