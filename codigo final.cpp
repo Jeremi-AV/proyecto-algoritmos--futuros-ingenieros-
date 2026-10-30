@@ -87,6 +87,7 @@ void moduloCatalogo() {
                          << " | Estado: " << (libro.disponible ? "Disponible" : "Prestado") << endl;
                 }
             }
+
         } else if (subOpcion == 3) {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             string busqueda;
@@ -146,6 +147,8 @@ void moduloCatalogo() {
             if (!eliminado) cout << "No se encontro el ID.\n";
         }
     } while (subOpcion != 7);
+
+    guardarDatos(); // se guarda automaticamente al volver al menu principal
 }
 
 void moduloUsuarios() {
@@ -220,6 +223,8 @@ void moduloUsuarios() {
             if (!eliminado) cout << "No se encontro el ID.\n";
         }
     } while (subOpcion != 5);
+
+    guardarDatos(); // se guarda automaticamente al volver al menu principal
 }
 
 void moduloPrestamos() {
@@ -317,6 +322,8 @@ void moduloPrestamos() {
             if (!cancelado) cout << "No se encontro el prestamo.\n";
         }
     } while (subOpcion != 5);
+
+    guardarDatos(); // se guarda automaticamente al volver al menu principal
 }
 
 void guardarDatos() {
@@ -342,6 +349,17 @@ void guardarDatos() {
             filePrestamos << p.idPrestamo << "|" << p.idLibro << "|" << p.idUsuario << "|" << p.fecha << "\n";
         }
         filePrestamos.close();
+    }
+
+    // Mapa de estantes: una celda por linea (9 lineas)
+    ofstream fileEstantes("estantes.txt");
+    if (fileEstantes.is_open()) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                fileEstantes << matrizEstantes[i][j] << "\n";
+            }
+        }
+        fileEstantes.close();
     }
 }
 
@@ -413,6 +431,20 @@ void cargarDatos() {
         }
         filePrestamos.close();
     }
+
+    // Mapa de estantes
+    ifstream fileEstantes("estantes.txt");
+    if (fileEstantes.is_open()) {
+        string linea;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (getline(fileEstantes, linea)) {
+                    matrizEstantes[i][j] = linea;
+                }
+            }
+        }
+        fileEstantes.close();
+    }
 }
 
 void moduloArchivos() {
@@ -433,8 +465,10 @@ void moduloArchivos() {
 
         if (subOpcion == 1) {
             guardarDatos();
+            cout << "Datos guardados correctamente.\n";
         } else if (subOpcion == 2) {
             cargarDatos();
+            cout << "Datos cargados desde los archivos.\n";
         }
     } while (subOpcion != 3);
 }
