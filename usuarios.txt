@@ -3,3 +3,4 @@
 2|alejandro herrera|0002
 3|sebastian rivas|0003
 4|valentina dominguez|0004
+6|jose chavez|0006
