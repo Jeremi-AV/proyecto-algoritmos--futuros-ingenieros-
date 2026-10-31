@@ -3,13 +3,12 @@
 // Guarda y carga libros, usuarios y prestamos en archivos .txt
 #include <iostream>
 #include <string>
-#include <limits>
 #include <vector>
+#include <limits>
 #include <fstream>
 #include <sstream>
 using namespace std;
 
-// mismos struct que usa el menu_inicial.cpp
 struct Libro {
     int id;
     string titulo;
@@ -30,44 +29,60 @@ struct Prestamo {
     string fecha;
 };
 
-//  GUARDAR 
+vector<Libro> catalogoLibros;
+vector<Usuario> listaUsuarios;
+vector<Prestamo> listaPrestamos;
 
-void guardarLibros(vector<Libro>& libros) {
+// ---------- GUARDAR ----------
+// cada linea del archivo es un registro y los campos van separados por |
+
+void guardarLibros() {
     ofstream archivo("libros.txt");
-    for (int i = 0; i < libros.size(); i++) {
-        archivo << libros[i].id << "|" << libros[i].titulo << "|"
-                << libros[i].autor << "|" << libros[i].disponible << endl;
+    for (int i = 0; i < (int)catalogoLibros.size(); i++) {
+        archivo << catalogoLibros[i].id << "|"
+                << catalogoLibros[i].titulo << "|"
+                << catalogoLibros[i].autor << "|"
+                << catalogoLibros[i].disponible << endl;
     }
     archivo.close();
 }
 
-void guardarUsuarios(vector<Usuario>& usuarios) {
+void guardarUsuarios() {
     ofstream archivo("usuarios.txt");
-    for (int i = 0; i < usuarios.size(); i++) {
-        archivo << usuarios[i].id << "|" << usuarios[i].nombre << "|"
-                << usuarios[i].carne << endl;
+    for (int i = 0; i < (int)listaUsuarios.size(); i++) {
+        archivo << listaUsuarios[i].id << "|"
+                << listaUsuarios[i].nombre << "|"
+                << listaUsuarios[i].carne << endl;
     }
     archivo.close();
 }
 
-void guardarPrestamos(vector<Prestamo>& prestamos) {
+void guardarPrestamos() {
     ofstream archivo("prestamos.txt");
-    for (int i = 0; i < prestamos.size(); i++) {
-        archivo << prestamos[i].idPrestamo << "|" << prestamos[i].idLibro << "|"
-                << prestamos[i].idUsuario << "|" << prestamos[i].fecha << endl;
+    for (int i = 0; i < (int)listaPrestamos.size(); i++) {
+        archivo << listaPrestamos[i].idPrestamo << "|"
+                << listaPrestamos[i].idLibro << "|"
+                << listaPrestamos[i].idUsuario << "|"
+                << listaPrestamos[i].fecha << endl;
     }
     archivo.close();
 }
 
-//  CARGAR 
-// regresan false si el archivo todavia no existe
+void guardarDatos() {
+    guardarLibros();
+    guardarUsuarios();
+    guardarPrestamos();
+}
 
-bool cargarLibros(vector<Libro>& libros) {
+// ---------- CARGAR ----------
+// si el archivo no existe no hace nada; las lineas dañadas se saltan
+
+void cargarLibros() {
     ifstream archivo("libros.txt");
     if (!archivo.is_open()) {
-        return false;
+        return;
     }
-    libros.clear();
+    catalogoLibros.clear();
     string linea;
     while (getline(archivo, linea)) {
         if (linea == "") {
@@ -80,20 +95,23 @@ bool cargarLibros(vector<Libro>& libros) {
         getline(ss, l.titulo, '|');
         getline(ss, l.autor, '|');
         getline(ss, disponible, '|');
-        l.id = stoi(id);
+        try {
+            l.id = stoi(id);
+        } catch (...) {
+            continue;
+        }
         l.disponible = (disponible == "1");
-        libros.push_back(l);
+        catalogoLibros.push_back(l);
     }
     archivo.close();
-    return true;
 }
 
-bool cargarUsuarios(vector<Usuario>& usuarios) {
+void cargarUsuarios() {
     ifstream archivo("usuarios.txt");
     if (!archivo.is_open()) {
-        return false;
+        return;
     }
-    usuarios.clear();
+    listaUsuarios.clear();
     string linea;
     while (getline(archivo, linea)) {
         if (linea == "") {
@@ -105,19 +123,22 @@ bool cargarUsuarios(vector<Usuario>& usuarios) {
         getline(ss, id, '|');
         getline(ss, u.nombre, '|');
         getline(ss, u.carne, '|');
-        u.id = stoi(id);
-        usuarios.push_back(u);
+        try {
+            u.id = stoi(id);
+        } catch (...) {
+            continue;
+        }
+        listaUsuarios.push_back(u);
     }
     archivo.close();
-    return true;
 }
 
-bool cargarPrestamos(vector<Prestamo>& prestamos) {
+void cargarPrestamos() {
     ifstream archivo("prestamos.txt");
     if (!archivo.is_open()) {
-        return false;
+        return;
     }
-    prestamos.clear();
+    listaPrestamos.clear();
     string linea;
     while (getline(archivo, linea)) {
         if (linea == "") {
@@ -130,26 +151,36 @@ bool cargarPrestamos(vector<Prestamo>& prestamos) {
         getline(ss, idLibro, '|');
         getline(ss, idUsuario, '|');
         getline(ss, p.fecha, '|');
-        p.idPrestamo = stoi(idPrestamo);
-        p.idLibro = stoi(idLibro);
-        p.idUsuario = stoi(idUsuario);
-        prestamos.push_back(p);
+        try {
+            p.idPrestamo = stoi(idPrestamo);
+            p.idLibro = stoi(idLibro);
+            p.idUsuario = stoi(idUsuario);
+        } catch (...) {
+            continue;
+        }
+        listaPrestamos.push_back(p);
     }
     archivo.close();
-    return true;
 }
 
-// RECORRIDO Y BUSQUEDA 
+void cargarDatos() {
+    cargarLibros();
+    cargarUsuarios();
+    cargarPrestamos();
+}
+
+// ---------- RECORRIDO Y BUSQUEDA ----------
 
 // recorre el vector y muestra todos los libros
-void mostrarLibros(vector<Libro>& libros) {
-    if (libros.size() == 0) {
-        cout << "No hay libros cargados." << endl;
+void verLibros() {
+    if (catalogoLibros.size() == 0) {
+        cout << "No hay libros registrados." << endl;
         return;
     }
-    for (int i = 0; i < libros.size(); i++) {
-        cout << libros[i].id << " - " << libros[i].titulo << " - " << libros[i].autor;
-        if (libros[i].disponible) {
+    for (int i = 0; i < (int)catalogoLibros.size(); i++) {
+        cout << catalogoLibros[i].id << " - " << catalogoLibros[i].titulo
+             << " - " << catalogoLibros[i].autor;
+        if (catalogoLibros[i].disponible) {
             cout << " - Disponible" << endl;
         } else {
             cout << " - Prestado" << endl;
@@ -157,127 +188,83 @@ void mostrarLibros(vector<Libro>& libros) {
     }
 }
 
-// recorre el vector y muestra todos los usuarios
-void mostrarUsuarios(vector<Usuario>& usuarios) {
-    if (usuarios.size() == 0) {
-        cout << "No hay usuarios cargados." << endl;
-        return;
-    }
-    for (int i = 0; i < usuarios.size(); i++) {
-        cout << usuarios[i].id << " - " << usuarios[i].nombre << " - " << usuarios[i].carne << endl;
-    }
-}
-
-// recorre el vector y muestra todos los prestamos
-void mostrarPrestamos(vector<Prestamo>& prestamos) {
-    if (prestamos.size() == 0) {
-        cout << "No hay prestamos cargados." << endl;
-        return;
-    }
-    for (int i = 0; i < prestamos.size(); i++) {
-        cout << "Prestamo " << prestamos[i].idPrestamo << " - libro " << prestamos[i].idLibro
-             << " - usuario " << prestamos[i].idUsuario << " - fecha " << prestamos[i].fecha << endl;
-    }
-}
-
 // busca un libro por id, regresa su posicion o -1 si no existe
-int buscarLibroPorId(vector<Libro>& libros, int id) {
-    for (int i = 0; i < libros.size(); i++) {
-        if (libros[i].id == id) {
+int buscarLibroPorId(int id) {
+    for (int i = 0; i < (int)catalogoLibros.size(); i++) {
+        if (catalogoLibros[i].id == id) {
             return i;
         }
     }
     return -1;
 }
 
-// datos de ejemplo para probar mientras los otros modulos no estan listos
-void cargarDatosDePrueba(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
-    libros.clear();
-    usuarios.clear();
-    prestamos.clear();
-    libros.push_back({1, "Cien anios de soledad", "Gabriel Garcia Marquez", true});
-    libros.push_back({2, "El principito", "Antoine de Saint-Exupery", false});
-    usuarios.push_back({1, "Josue Chavez", "2026001"});
-    prestamos.push_back({1, 2, 1, "2026-10-01"});
-}
+// ---------- MENU DEL MODULO ----------
 
-//  MENU DEL MODULO
+void moduloArchivos() {
+    int subOpcion = 0;
+    do {
+        cout << "\nMODULO 4: PERSISTENCIA Y ARCHIVOS" << endl;
+        cout << "1. Guardar datos en archivos" << endl;
+        cout << "2. Cargar datos desde archivos" << endl;
+        cout << "3. Ver libros" << endl;
+        cout << "4. Buscar libro por id" << endl;
+        cout << "5. Volver al menu principal" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> subOpcion;
 
-void moduloArchivos(vector<Libro>& libros, vector<Usuario>& usuarios, vector<Prestamo>& prestamos) {
-    int opcion = 0;
-
-    cout << "   [MODULO 4: PERSISTENCIA Y ARCHIVOS]" << endl;
-    cout << "1. Guardar datos en archivos (.txt)" << endl;
-    cout << "2. Cargar datos desde archivos (.txt)" << endl;
-    cout << "3. Ver libros cargados" << endl;
-    cout << "4. Buscar libro por id" << endl;
-    cout << "5. Cargar datos de prueba" << endl;
-    cout << "6. Ver usuarios y prestamos cargados" << endl;
-    cout << "Seleccione una opcion: ";
-    cin >> opcion;
-
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Opcion invalida." << endl;
-        return;
-    }
-
-    if (opcion == 1) {
-        guardarLibros(libros);
-        guardarUsuarios(usuarios);
-        guardarPrestamos(prestamos);
-        cout << "Datos guardados: " << libros.size() << " libros, " << usuarios.size()
-             << " usuarios, " << prestamos.size() << " prestamos." << endl;
-    } else if (opcion == 2) {
-        if (cargarLibros(libros) && cargarUsuarios(usuarios) && cargarPrestamos(prestamos)) {
-            cout << "Datos cargados: " << libros.size() << " libros, " << usuarios.size()
-                 << " usuarios, " << prestamos.size() << " prestamos." << endl;
-        } else {
-            cout << "No se encontraron los archivos. Primero guarde los datos." << endl;
-        }
-    } else if (opcion == 3) {
-        mostrarLibros(libros);
-    } else if (opcion == 4) {
-        int id;
-        cout << "Ingrese el id del libro: ";
-        cin >> id;
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Id invalido." << endl;
-            return;
+            cout << "Opcion invalida." << endl;
+            continue;
         }
-        int pos = buscarLibroPorId(libros, id);
-        if (pos == -1) {
-            cout << "El libro no existe." << endl;
-        } else {
-            cout << "Encontrado: " << libros[pos].titulo << " - " << libros[pos].autor << endl;
+
+        if (subOpcion == 1) {
+            guardarDatos();
+            cout << "Datos guardados: " << catalogoLibros.size() << " libros, "
+                 << listaUsuarios.size() << " usuarios, "
+                 << listaPrestamos.size() << " prestamos." << endl;
+        } else if (subOpcion == 2) {
+            cargarDatos();
+            cout << "Datos cargados: " << catalogoLibros.size() << " libros, "
+                 << listaUsuarios.size() << " usuarios, "
+                 << listaPrestamos.size() << " prestamos." << endl;
+        } else if (subOpcion == 3) {
+            verLibros();
+        } else if (subOpcion == 4) {
+            int id;
+            cout << "Ingrese el id del libro: ";
+            cin >> id;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Id invalido." << endl;
+                continue;
+            }
+            int pos = buscarLibroPorId(id);
+            if (pos == -1) {
+                cout << "El libro no existe." << endl;
+            } else {
+                cout << "Encontrado: " << catalogoLibros[pos].titulo
+                     << " - " << catalogoLibros[pos].autor << endl;
+            }
+        } else if (subOpcion != 5) {
+            cout << "Opcion invalida." << endl;
         }
-    } else if (opcion == 5) {
-        cargarDatosDePrueba(libros, usuarios, prestamos);
-        cout << "Datos de prueba cargados." << endl;
-    } else if (opcion == 6) {
-        mostrarUsuarios(usuarios);
-        mostrarPrestamos(prestamos);
-    } else {
-        cout << "Opcion invalida." << endl;
-    }
+    } while (subOpcion != 5);
 }
 
-// main solo para probar este modulo por separado
 int main() {
-    vector<Libro> libros;
-    vector<Usuario> usuarios;
-    vector<Prestamo> prestamos;
-    int seguir = 1;
+    cargarDatos();
 
-    while (seguir == 1) {
-        moduloArchivos(libros, usuarios, prestamos);
-        cout << "\nContinuar en el modulo? (1 = si, 0 = salir): ";
-        cin >> seguir;
-        cout << endl;
+    // datos de ejemplo, solo si todavia no hay archivos guardados
+    if (catalogoLibros.size() == 0 && listaUsuarios.size() == 0) {
+        catalogoLibros.push_back({1, "Cien anios de soledad", "Gabriel Garcia Marquez", true});
+        catalogoLibros.push_back({2, "El principito", "Antoine de Saint-Exupery", false});
+        listaUsuarios.push_back({1, "Josue Chavez", "2026001"});
+        listaPrestamos.push_back({1, 2, 1, "2026-10-01"});
     }
 
+    moduloArchivos();
     return 0;
 }
