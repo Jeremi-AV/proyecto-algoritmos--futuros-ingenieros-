@@ -639,7 +639,7 @@ void moduloReportes() {
     cout << "Total de Libros registrados: " << catalogoLibros.size() << endl;
     cout << "Total de Usuarios registrados: " << listaUsuarios.size() << endl;
     cout << "Total de Prestamos realizados: " << listaPrestamos.size() << endl;
-    cout << "Libros disponibles (Conteo Recursivo): " << conteoRecursivoLibros(0) << endl;
+    cout << "Libros disponibles: " << conteoRecursivoLibros(0) << endl;
 }
 
 int mostrarMenu() {
@@ -649,8 +649,8 @@ int mostrarMenu() {
     cout << "1. Catalogo de Libros" << endl;
     cout << "2. Usuarios / Lectores" << endl;
     cout << "3. Prestamos y Devoluciones" << endl;
-    cout << "4. Persistencia y Archivos" << endl;
-    cout << "5. Reportes y Recursividad" << endl;
+    cout << "4. guardar Archivos" << endl;
+    cout << "5. Reportes" << endl;
     cout << "6. Salir" << endl;
     cout << "Seleccione una opcion: ";
 
